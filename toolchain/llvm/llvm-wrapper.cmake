@@ -8,18 +8,26 @@ ExternalProject_Add(llvm-wrapper
     COMMAND ${CMAKE_COMMAND} -E make_directory ${MINGW_INSTALL_PREFIX}
     COMMAND ${CMAKE_COMMAND} -E make_directory ${MINGW_INSTALL_PREFIX}/lib
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-ar        ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-ar
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-ar        ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-ar
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-ar        ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-ranlib
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-ar        ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-ranlib
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-ar        ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-dlltool
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-ranlib    ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-ranlib
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-dlltool   ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-dlltool
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-objcopy   ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-objcopy
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-objcopy   ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-strip
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-strip     ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-strip
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-size      ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-size
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-strings   ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-strings
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-nm        ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-nm
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-readelf   ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-readelf
-    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-rc        ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-windres
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-windres   ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-windres
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-addr2line ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-addr2line
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-ar        ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-ar
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-ranlib    ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-ranlib
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-dlltool   ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-dlltool
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-objcopy   ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-objcopy
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-strip     ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-strip
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-size      ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-size
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-nm        ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-nm
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-readelf   ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-readelf
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-windres   ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-windres
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${CMAKE_INSTALL_PREFIX}/bin/llvm-addr2line ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-llvm-addr2line
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${PKGCONFIG} ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-pkg-config
     COMMAND ${CMAKE_COMMAND} -E create_symlink ${PKGCONFIG} ${CMAKE_INSTALL_PREFIX}/bin/${TARGET_ARCH}-pkgconf
     INSTALL_COMMAND ""
