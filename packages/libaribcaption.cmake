@@ -1,6 +1,5 @@
 ExternalProject_Add(libaribcaption
     DEPENDS
-        fontconfig
         freetype2
         openssl
     GIT_REPOSITORY https://github.com/xqq/libaribcaption.git
@@ -18,7 +17,6 @@ ExternalProject_Add(libaribcaption
         -DARIBCC_SHARED_LIBRARY=OFF
         -DARIBCC_USE_EMBEDDED_FREETYPE=OFF
         -DARIBCC_NO_RTTI=ON
-        -DARIBCC_USE_FONTCONFIG=ON
         -DARIBCC_USE_FREETYPE=ON
         "-DCMAKE_C_FLAGS='-DHAVE_OPENSSL=1'"
         "-DCMAKE_CXX_FLAGS='-DHAVE_OPENSSL=1'"
