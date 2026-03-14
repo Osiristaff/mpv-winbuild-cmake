@@ -90,18 +90,6 @@ list(APPEND ep
     mpv
     mpv-release
     mpv-packaging
-    curl
-    flac
-    opusfile
-    libopusenc
-    opus-tools
-    termcap
-    readline
-    cryptopp
-    sqlite
-    libuv
-    libsodium
-    megasdk
 )
 foreach(package IN LISTS ep)
     if(NOT ${SINGLE_SOURCE_LOCATION} STREQUAL "")
@@ -118,10 +106,6 @@ endforeach()
 list(LENGTH ep ep_length)
 message(STATUS "Parsing ${ep_length} packages")
 
-# Exclude packages which dont depend on mpv when update
-list(APPEND removed "flac" "opusfile" "libopusenc" "opus-tools" "termcap" "readline" "cryptopp" "sqlite" "libuv" "libsodium" "megasdk" "libsixel" "curl" "libressl" "mbedtls" "nettle" "gmp")
-list(REMOVE_ITEM repo ${removed})
-list(REMOVE_ITEM ep ${removed})
 list(TRANSFORM repo APPEND "-force-update" OUTPUT_VARIABLE update)
 list(TRANSFORM ep APPEND "-download" OUTPUT_VARIABLE download)
 list(TRANSFORM ep APPEND "-fullclean" OUTPUT_VARIABLE fullclean)

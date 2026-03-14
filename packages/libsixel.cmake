@@ -1,15 +1,13 @@
 ExternalProject_Add(libsixel
-    DEPENDS
-        libpng
-        libjpeg
     GIT_REPOSITORY https://github.com/saitoha/libsixel.git
     GIT_CLONE_FLAGS "--filter=tree:0"
     UPDATE_COMMAND ""
+    PATCH_COMMAND ${EXEC} git am --3way ${CMAKE_CURRENT_SOURCE_DIR}/libsixel-*.patch
     CONFIGURE_COMMAND ${EXEC} CONF=1 <SOURCE_DIR>/configure
         --host=${TARGET_ARCH}
         --prefix=${MINGW_INSTALL_PREFIX}
-        --with-jpeg
-        --with-png
+        --with-jpeg=no
+        --with-png=no
         --disable-img2sixel
         --disable-sixel2png
         --disable-python

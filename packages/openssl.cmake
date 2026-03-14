@@ -18,13 +18,11 @@ ExternalProject_Add(openssl
         no-autoload-config
         ${openssl_target}
         ${openssl_ec_opt}
-        no-ssl3-method
         enable-brotli
         no-whirlpool
         no-filenames
         no-camellia
         enable-zstd
-        no-capieng
         no-shared
         no-rmd160
         no-module
@@ -34,7 +32,6 @@ ExternalProject_Add(openssl
         no-docs
         no-apps
         no-ocsp
-        no-ssl3
         no-cmac
         no-mdc2
         no-idea
