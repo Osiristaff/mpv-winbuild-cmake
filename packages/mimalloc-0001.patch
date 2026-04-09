@@ -1,0 +1,274 @@
+From 95f07744a1c299d773a5f04a69cbcf61bff537b1 Mon Sep 17 00:00:00 2001
+From: _ <>
+Date: Thu, 15 Jan 2026 00:00:00 +0000
+Subject: [PATCH] U
+
+---
+ CMakeLists.txt              |  8 +++----
+ include/mimalloc/internal.h |  2 +-
+ src/bitmap.c                |  5 +++++
+ src/init.c                  |  2 +-
+ src/options.c               |  4 ++--
+ src/prim/windows/prim.c     | 44 +++++++++++++++++++------------------
+ 6 files changed, 36 insertions(+), 29 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index dcffb0505..400dd57a8 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -447,7 +447,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "AppleClang|Clang|GNU|Intel" AND NOT CMAKE_SYSTEM
+       list(APPEND mi_cflags -ftls-model=initial-exec)
+     endif()
+   endif()
+-  if(MI_OVERRIDE)
++  if(FALSE)
+     list(APPEND mi_cflags -fno-builtin-malloc)
+   endif()
+ endif()
+@@ -473,11 +473,11 @@ if (MSVC AND MSVC_VERSION GREATER_EQUAL 1914)
+   endif()
+ endif()
+ 
+-if(MINGW)
++if(FALSE)
+   add_definitions(-D_WIN32_WINNT=0x600)                # issue #976
+ endif()
+ 
+-if(MI_OPT_ARCH_FLAGS)
++if(FALSE)
+   list(APPEND mi_cflags ${MI_OPT_ARCH_FLAGS})
+   message(STATUS "Architecture specific optimization is enabled (with ${MI_OPT_ARCH_FLAGS}) (MI_OPT_ARCH=ON)")
+ endif()
+@@ -505,7 +505,7 @@ endfunction()
+ 
+ if(WIN32)
+   list(APPEND mi_libraries psapi shell32 user32 advapi32 bcrypt)
+-else()
++elseif(FALSE)
+   find_link_library("pthread" MI_LIB_PTHREAD)
+   if(MI_LIB_PTHREAD)
+     list(APPEND mi_libraries "${MI_LIB_PTHREAD}")
+diff --git a/include/mimalloc/internal.h b/include/mimalloc/internal.h
+index 0f068063c..de89bd0f3 100644
+--- a/include/mimalloc/internal.h
++++ b/include/mimalloc/internal.h
+@@ -1100,7 +1100,7 @@ static inline size_t mi_popcount(size_t x) {
+ // (AMD Zen3+ (~2020) or Intel Ice Lake+ (~2017). See also issue #201 and pr #253.
+ // ---------------------------------------------------------------------------------
+ 
+-#if !MI_TRACK_ENABLED && defined(_WIN32) && (defined(_M_IX86) || defined(_M_X64))
++#if !MI_TRACK_ENABLED && defined(_WIN32) && (defined(_M_IX86) || defined(_M_X64)) && 0
+ #include <intrin.h>
+ extern mi_decl_hidden bool _mi_cpu_has_fsrm;
+ extern mi_decl_hidden bool _mi_cpu_has_erms;
+diff --git a/src/bitmap.c b/src/bitmap.c
+index 32d1e9548..705d389bb 100644
+--- a/src/bitmap.c
++++ b/src/bitmap.c
+@@ -414,6 +414,11 @@ static bool mi_bitmap_is_claimedx_across(mi_bitmap_t bitmap, size_t bitmap_field
+   size_t prev = mi_atomic_load_relaxed(field++);
+   if ((prev & pre_mask) != pre_mask) all_ones = false;
+   if ((prev & pre_mask) != 0) { any_ones = true; one_count += mi_popcount(prev & pre_mask); }
++  #ifdef __AVX512VPOPCNTDQ__
++  #pragma clang loop vectorize(assume_safety) vectorize_width(8)
++  #elif defined(__ARM_FEATURE_SVE2)
++  #pragma clang loop vectorize(assume_safety) vectorize_width(2,scalable)
++  #endif
+   while (mid_count-- > 0) {
+     prev = mi_atomic_load_relaxed(field++);
+     if ((prev & mid_mask) != mid_mask) all_ones = false;
+diff --git a/src/init.c b/src/init.c
+index 8cff6b9d9..1ec02620e 100644
+--- a/src/init.c
++++ b/src/init.c
+@@ -604,7 +604,7 @@ void _mi_auto_process_init(void) {
+   _mi_random_reinit_if_weak(&_mi_heap_main.random);
+ }
+ 
+-#if defined(_WIN32) && (defined(_M_IX86) || defined(_M_X64))
++#if defined(_WIN32) && (defined(_M_IX86) || defined(_M_X64)) && 0
+ #include <intrin.h>
+ mi_decl_cache_align bool _mi_cpu_has_fsrm = false;
+ mi_decl_cache_align bool _mi_cpu_has_erms = false;
+diff --git a/src/options.c b/src/options.c
+index ba2224270..dbb074c0d 100644
+--- a/src/options.c
++++ b/src/options.c
+@@ -79,7 +79,7 @@ typedef struct mi_option_desc_s {
+ #endif
+ 
+ #ifndef MI_DEFAULT_ALLOW_LARGE_OS_PAGES
+-#define MI_DEFAULT_ALLOW_LARGE_OS_PAGES 0
++#define MI_DEFAULT_ALLOW_LARGE_OS_PAGES 1
+ #endif
+ 
+ #ifndef MI_DEFAULT_RESERVE_HUGE_OS_PAGES
+@@ -101,7 +101,7 @@ typedef struct mi_option_desc_s {
+ 
+ #ifndef MI_DEFAULT_ALLOW_THP
+ #if defined(__ANDROID__)
+-#define MI_DEFAULT_ALLOW_THP  0
++#define MI_DEFAULT_ALLOW_THP  1
+ #else
+ #define MI_DEFAULT_ALLOW_THP  1
+ #endif
+diff --git a/src/prim/windows/prim.c b/src/prim/windows/prim.c
+index 9cce07d7e..b687e6489 100644
+--- a/src/prim/windows/prim.c
++++ b/src/prim/windows/prim.c
+@@ -86,7 +86,7 @@ static bool win_enable_large_os_pages(size_t* large_page_size)
+   static bool large_initialized = false;
+   if (large_initialized) return (_mi_os_large_page_size() > 0);
+   large_initialized = true;
+-  if (pGetLargePageMinimum==NULL) return false;  // no large page support (xbox etc.)
++  if (false) return false;  // no large page support (xbox etc.)
+ 
+   // Try to see if large OS pages are supported
+   // To use large pages on Windows, we first need access permission
+@@ -105,8 +105,8 @@ static bool win_enable_large_os_pages(size_t* large_page_size)
+       if (ok) {
+         err = GetLastError();
+         ok = (err == ERROR_SUCCESS);
+-        if (ok && large_page_size != NULL && pGetLargePageMinimum != NULL) {
+-          *large_page_size = (*pGetLargePageMinimum)();
++        if (ok && large_page_size != NULL) {
++          *large_page_size = (GetLargePageMinimum)();
+         }
+       }
+     }
+@@ -143,7 +143,7 @@ void _mi_prim_mem_init( mi_os_mem_config_t* config )
+   // get the VirtualAlloc2 function
+   HINSTANCE  hDll;
+   hDll = LoadLibrary(TEXT("kernelbase.dll"));
+-  if (hDll != NULL) {
++  if (true) {
+     // use VirtualAlloc2FromApp if possible as it is available to Windows store apps
+     pVirtualAlloc2 = (PVirtualAlloc2)(void (*)(void))GetProcAddress(hDll, "VirtualAlloc2FromApp");
+     if (pVirtualAlloc2==NULL) pVirtualAlloc2 = (PVirtualAlloc2)(void (*)(void))GetProcAddress(hDll, "VirtualAlloc2");
+@@ -151,13 +151,13 @@ void _mi_prim_mem_init( mi_os_mem_config_t* config )
+   }
+   // NtAllocateVirtualMemoryEx is used for huge page allocation
+   hDll = LoadLibrary(TEXT("ntdll.dll"));
+-  if (hDll != NULL) {
++  if (true) {
+     pNtAllocateVirtualMemoryEx = (PNtAllocateVirtualMemoryEx)(void (*)(void))GetProcAddress(hDll, "NtAllocateVirtualMemoryEx");
+     FreeLibrary(hDll);
+   }
+   // Try to use Win7+ numa API
+   hDll = LoadLibrary(TEXT("kernel32.dll"));
+-  if (hDll != NULL) {
++  if (true) {
+     pGetCurrentProcessorNumberEx = (PGetCurrentProcessorNumberEx)(void (*)(void))GetProcAddress(hDll, "GetCurrentProcessorNumberEx");
+     pGetNumaProcessorNodeEx = (PGetNumaProcessorNodeEx)(void (*)(void))GetProcAddress(hDll, "GetNumaProcessorNodeEx");
+     pGetNumaNodeProcessorMaskEx = (PGetNumaNodeProcessorMaskEx)(void (*)(void))GetProcAddress(hDll, "GetNumaNodeProcessorMaskEx");
+@@ -167,9 +167,9 @@ void _mi_prim_mem_init( mi_os_mem_config_t* config )
+     pGetLargePageMinimum = (PGetLargePageMinimum)(void (*)(void))GetProcAddress(hDll, "GetLargePageMinimum");
+     // Get physical memory (not available on XP, so check dynamically)
+     PGetPhysicallyInstalledSystemMemory pGetPhysicallyInstalledSystemMemory = (PGetPhysicallyInstalledSystemMemory)(void (*)(void))GetProcAddress(hDll,"GetPhysicallyInstalledSystemMemory");
+-    if (pGetPhysicallyInstalledSystemMemory != NULL) {
++    if (true) {
+       ULONGLONG memInKiB = 0;
+-      if ((*pGetPhysicallyInstalledSystemMemory)(&memInKiB)) {
++      if ((GetPhysicallyInstalledSystemMemory)(&memInKiB)) {
+         if (memInKiB > 0 && memInKiB <= SIZE_MAX) {
+           config->physical_memory_in_kib = (size_t)memInKiB;
+         }
+@@ -227,7 +227,7 @@ static void* win_virtual_alloc_prim_once(void* addr, size_t size, size_t try_ali
+   }
+   #endif
+   // on modern Windows try use VirtualAlloc2 for aligned allocation
+-  if (addr == NULL && try_alignment > 1 && (try_alignment % _mi_os_page_size()) == 0 && pVirtualAlloc2 != NULL) {
++  if (addr == NULL && try_alignment > 1 && (try_alignment % _mi_os_page_size()) == 0) {
+     MI_MEM_ADDRESS_REQUIREMENTS reqs = { 0, 0, 0 };
+     reqs.Alignment = try_alignment;
+     MI_MEM_EXTENDED_PARAMETER param = { {0, 0}, {0} };
+@@ -394,7 +394,7 @@ static void* _mi_prim_alloc_huge_os_pagesx(void* hint_addr, size_t size, int num
+   MI_MEM_EXTENDED_PARAMETER params[3] = { {{0,0},{0}},{{0,0},{0}},{{0,0},{0}} };
+   // on modern Windows try use NtAllocateVirtualMemoryEx for 1GiB huge pages
+   static bool mi_huge_pages_available = true;
+-  if (pNtAllocateVirtualMemoryEx != NULL && mi_huge_pages_available) {
++  if (mi_huge_pages_available) {
+     params[0].Type.Type = MiMemExtendedParameterAttributeFlags;
+     params[0].Arg.ULong64 = MI_MEM_EXTENDED_PARAMETER_NONPAGED_HUGE;
+     ULONG param_count = 1;
+@@ -416,7 +416,7 @@ static void* _mi_prim_alloc_huge_os_pagesx(void* hint_addr, size_t size, int num
+     }
+   }
+   // on modern Windows try use VirtualAlloc2 for numa aware large OS page allocation
+-  if (pVirtualAlloc2 != NULL && numa_node >= 0) {
++  if (numa_node >= 0) {
+     params[0].Type.Type = MiMemExtendedParameterNumaNode;
+     params[0].Arg.ULong = (unsigned)numa_node;
+     return (*pVirtualAlloc2)(GetCurrentProcess(), hint_addr, size, flags, PAGE_READWRITE, params, 1);
+@@ -439,7 +439,7 @@ int _mi_prim_alloc_huge_os_pages(void* hint_addr, size_t size, int numa_node, bo
+ 
+ size_t _mi_prim_numa_node(void) {
+   USHORT numa_node = 0;
+-  if (pGetCurrentProcessorNumberEx != NULL && pGetNumaProcessorNodeEx != NULL) {
++  if (true) {
+     // Extended API is supported
+     MI_PROCESSOR_NUMBER pnum;
+     (*pGetCurrentProcessorNumberEx)(&pnum);
+@@ -459,15 +459,15 @@ size_t _mi_prim_numa_node(void) {
+ 
+ size_t _mi_prim_numa_node_count(void) {
+   ULONG numa_max = 0;
+-  if (pGetNumaHighestNodeNumber!=NULL) {
+-    (*pGetNumaHighestNodeNumber)(&numa_max);
++  if (true) {
++    (GetNumaHighestNodeNumber)(&numa_max);
+   }
+   // find the highest node number that has actual processors assigned to it. Issue #282
+   while (numa_max > 0) {
+-    if (pGetNumaNodeProcessorMaskEx != NULL) {
++    if (true) {
+       // Extended API is supported
+       GROUP_AFFINITY affinity;
+-      if ((*pGetNumaNodeProcessorMaskEx)((USHORT)numa_max, &affinity)) {
++      if ((GetNumaNodeProcessorMaskEx)((USHORT)numa_max, &affinity)) {
+         if (affinity.Mask != 0) break;  // found the maximum non-empty node
+       }
+     }
+@@ -537,7 +537,7 @@ void _mi_prim_process_info(mi_process_info_t* pinfo)
+   pinfo->stime = filetime_msecs(&st);
+ 
+   // load psapi on demand
+-  if (pGetProcessMemoryInfo == NULL) {
++  if (false) {
+     HINSTANCE hDll = LoadLibrary(TEXT("psapi.dll"));
+     if (hDll != NULL) {
+       pGetProcessMemoryInfo = (PGetProcessMemoryInfo)(void (*)(void))GetProcAddress(hDll, "GetProcessMemoryInfo");
+@@ -546,8 +546,8 @@ void _mi_prim_process_info(mi_process_info_t* pinfo)
+ 
+   // get process info
+   PROCESS_MEMORY_COUNTERS info; _mi_memzero_var(info);
+-  if (pGetProcessMemoryInfo != NULL) {
+-    pGetProcessMemoryInfo(GetCurrentProcess(), &info, sizeof(info));
++  if (true) {
++    GetProcessMemoryInfo(GetCurrentProcess(), &info, sizeof(info));
+   }
+   pinfo->current_rss    = (size_t)info.WorkingSetSize;
+   pinfo->peak_rss       = (size_t)info.PeakWorkingSetSize;
+@@ -635,18 +635,20 @@ bool _mi_prim_random_buf(void* buf, size_t buf_len) {
+ #define BCRYPT_USE_SYSTEM_PREFERRED_RNG 0x00000002
+ #endif
+ 
++#include <bcrypt.h>
++
+ typedef LONG (NTAPI *PBCryptGenRandom)(HANDLE, PUCHAR, ULONG, ULONG);
+ static  PBCryptGenRandom pBCryptGenRandom = NULL;
+ 
+ bool _mi_prim_random_buf(void* buf, size_t buf_len) {
+-  if (pBCryptGenRandom == NULL) {
++  if (false) {
+     HINSTANCE hDll = LoadLibrary(TEXT("bcrypt.dll"));
+     if (hDll != NULL) {
+       pBCryptGenRandom = (PBCryptGenRandom)(void (*)(void))GetProcAddress(hDll, "BCryptGenRandom");
+     }
+     if (pBCryptGenRandom == NULL) return false;
+   }
+-  return (pBCryptGenRandom(NULL, (PUCHAR)buf, (ULONG)buf_len, BCRYPT_USE_SYSTEM_PREFERRED_RNG) >= 0);
++  return (BCryptGenRandom(NULL, (PUCHAR)buf, (ULONG)buf_len, BCRYPT_USE_SYSTEM_PREFERRED_RNG) >= 0);
+ }
+ 
+ #endif  // MI_USE_RTLGENRANDOM

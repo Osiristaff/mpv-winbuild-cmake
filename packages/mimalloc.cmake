@@ -1,11 +1,12 @@
 ExternalProject_Add(mimalloc
     SOURCE_DIR ${SOURCE_LOCATION}
-    GIT_REPOSITORY https://github.com/Andarwinux/mimalloc.git
+    GIT_REPOSITORY https://github.com/microsoft/mimalloc.git
     GIT_CLONE_FLAGS "--depth=1 --filter=tree:0"
     GIT_PROGRESS TRUE
     UPDATE_COMMAND ""
     GIT_REMOTE_NAME origin
     GIT_TAG dev2
+    PATCH_COMMAND ${EXEC} ${GIT_EXECUTABLE} am --3way ${CMAKE_CURRENT_SOURCE_DIR}/mimalloc-*.patch
     CONFIGURE_ENVIRONMENT_MODIFICATION
         _IS_CONFIGURE=set:1
     CONFIGURE_COMMAND ${EXEC} ${CMAKE_COMMAND} -H<SOURCE_DIR> -B<BINARY_DIR>
