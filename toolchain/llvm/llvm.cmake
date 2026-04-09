@@ -8,14 +8,14 @@ ExternalProject_Add(llvm
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--depth=1 --sparse --filter=tree:0"
     GIT_PROGRESS TRUE
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !*/test !*/docs !*/unittests !*/examples !*/benchmarks !/lldb !/mlir !/clang-tools-extra !/mlir !/flang !openmp !libclc !bolt !cross-project-tests !offload !llvm-libgcc !third-party !flang-rt third-party/siphash lld/docs/CMakeLists.txt clang/examples/CMakeLists.txt polly/test/CMakeLists.txt polly/docs/CMakeLists.txt polly/unittests/CMakeLists.txt libc/benchmarks/CMakeLists.txt"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !*/test !*/docs !*/unittests !*/examples !*/benchmarks !/lldb !/mlir !/clang-tools-extra !/mlir !/flang !openmp !libclc !bolt !cross-project-tests !offload !llvm-libgcc !third-party !flang-rt third-party/siphash lld/docs/CMakeLists.txt clang/examples/CMakeLists.txt libc/benchmarks/CMakeLists.txt"
     UPDATE_COMMAND ""
     PATCH_COMMAND ${EXEC} ${GIT_EXECUTABLE} am --3way ${CMAKE_CURRENT_SOURCE_DIR}/llvm/${llvm_patch}
     COMMAND ${EXEC} ${GIT_EXECUTABLE} am --3way ${CMAKE_CURRENT_SOURCE_DIR}/llvm/llvm-0*.patch
     GIT_REMOTE_NAME origin
     GIT_TAG main
     LIST_SEPARATOR ^^
-    CONFIGURE_COMMAND ${EXEC_HOST} echo > <SOURCE_DIR>/polly/docs/CMakeLists.txt & echo > <SOURCE_DIR>/polly/test/CMakeLists.txt & echo > <SOURCE_DIR>/polly/unittests/CMakeLists.txt && ${CMAKE_COMMAND} -H<SOURCE_DIR>/llvm -B<BINARY_DIR>
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} -S<SOURCE_DIR>/llvm -B<BINARY_DIR>
         -G Ninja
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_FIND_NO_INSTALL_PREFIX=OFF
@@ -35,8 +35,7 @@ ExternalProject_Add(llvm
         -DCMAKE_SKIP_RPATH=ON
         -DLLVM_INSTALL_TOOLCHAIN_ONLY=ON
         -DLLVM_TARGETS_TO_BUILD='AArch64^^X86^^NVPTX'
-        -DLLVM_ENABLE_PROJECTS='clang^^lld^^polly'
-        -DLLVM_POLLY_LINK_INTO_TOOLS=ON
+        -DLLVM_ENABLE_PROJECTS='clang^^lld'
         -DLLVM_ENABLE_ASSERTIONS=OFF
         -DLLVM_ENABLE_BACKTRACES=ON
         -DLLVM_ENABLE_LIBCXX=ON

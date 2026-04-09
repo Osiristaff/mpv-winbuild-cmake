@@ -10,12 +10,9 @@ if [ "$_IS_CONFIGURE" == "1" ]; then
     FLAGS_INIT="-lsleefgnuabi"
 else
     FLAGS+=" --thinlto-cache-dir=@MINGW_INSTALL_PREFIX@/thinlto --thinlto-cache-policy=$POLICY"
-    FLAGS+=" -O3 --lto-O3 --lto-CGO3 --gc-sections --icf=all -Xlink=-release -Xlink=-opt:lldtailmerge -Xlink=-cetcompat -Xlink=-cetcompatstrict -Xlink=-pdbsourcepath:C:\\ -Xlink=-pdbaltpath:%_PDB%"
+    FLAGS+=" -O3 --lto-O3 --lto-CGO3 --gc-sections --icf=all -Xlink=-release -Xlink=-opt:lldtailmerge -Xlink=-cetcompat -Xlink=-cetcompatstrict"
     if [ "$_PDB_GENERATE" == "1" ]; then
         FLAGS+=" -Xlink=-debug:ghash,nodwarf,symtab --pdb="
-    fi
-    if [ "$_LTO_ENABLED" != "0" ]; then
-        FLAGS+=" @MLLVM_FLAGS@"
     fi
     if [ "@LLVM_ENABLE_PGO@" == "GEN" ] || [ "@LLVM_ENABLE_PGO@" == "CSGEN" ]; then
         export LLVM_PROFILE_FILE="@LLVM_PROFILE_DATA_DIR@/lld-%m.profraw" #enable profraw output only when CONF!=1
