@@ -10,7 +10,7 @@ if [ "$_IS_CONFIGURE" == "1" ]; then
     FLAGS_INIT="-lsleefgnuabi"
 else
     FLAGS+=" --thinlto-cache-dir=@MINGW_INSTALL_PREFIX@/thinlto --thinlto-cache-policy=$POLICY"
-    FLAGS+=" -O3 --lto-O3 --lto-CGO3 -mllvm -import-instr-limit=100 -mllvm -import-hot-multiplier=3 --gc-sections --icf=all -Xlink=-release -Xlink=-opt:lldtailmerge -Xlink=-cetcompat -Xlink=-cetcompatstrict -Xlink=-pdbsourcepath:C:\\ -Xlink=-pdbaltpath:%_PDB%"
+    FLAGS+=" -O3 --lto-O3 --lto-CGO3 --gc-sections --icf=all -Xlink=-release -Xlink=-opt:lldtailmerge -Xlink=-cetcompat -Xlink=-cetcompatstrict -Xlink=-pdbsourcepath:C:\\ -Xlink=-pdbaltpath:%_PDB%"
     if [ "$_PDB_GENERATE" == "1" ]; then
         FLAGS+=" -Xlink=-debug:ghash,nodwarf,symtab --pdb="
     fi
