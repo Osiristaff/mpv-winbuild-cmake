@@ -9,6 +9,7 @@ ExternalProject_Add(frei0r
         _IS_CONFIGURE=set:1
     CONFIGURE_COMMAND ""
     COMMAND ${EXEC} echo > <SOURCE_DIR>/src/CMakeLists.txt
+    COMMAND ${EXEC} echo > <SOURCE_DIR>/test/CMakeLists.txt
     COMMAND ${EXEC} ${CMAKE_COMMAND} -H<SOURCE_DIR> -B<BINARY_DIR>
         ${cmake_conf_args}
         -DWITHOUT_OPENCV=ON
