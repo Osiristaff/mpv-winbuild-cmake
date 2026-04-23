@@ -37,7 +37,7 @@ ExternalProject_Add(llvm-libc
         _FORCE_BUILTIN=set:1
         _NOCCACHE=set:1
     BUILD_COMMAND ${EXEC} ninja -C <BINARY_DIR> libc.src.string.memmem
-                                                libc.src.string.memchr
+                                                #libc.src.string.memchr
                                                 libc.src.string.memcmp
                                                 libc.src.string.strspn
                                                 #libc.src.string.strlen
