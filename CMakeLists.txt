@@ -138,7 +138,7 @@ if(TARGET_CPU STREQUAL "x86_64")
     endif()
 else()
     execute_process(
-        COMMAND ${EXEC} echo | ${CMAKE_C_COMPILER} --target=aarch64 -dM -E - -mcpu=${MARCH}
+        COMMAND ${EXEC} echo | ${CMAKE_C_COMPILER} --target=aarch64 -dM -E - -mcpu=${MARCH}+crypto
         OUTPUT_VARIABLE CC_OUTPUT
     )
     if(CC_OUTPUT MATCHES "__ARM_FEATURE_FP16_VECTOR_ARITHMETIC 1")
@@ -158,6 +158,9 @@ else()
     endif()
     if(CC_OUTPUT MATCHES "__ARM_FEATURE_FP16_FML 1")
         set(MARCH_HAS_FP16_FML ON)
+    endif()
+    if(CC_OUTPUT MATCHES "__ARM_FEATURE_AES 1")
+        set(MARCH_HAS_AES ON)
     endif()
     if(CC_OUTPUT MATCHES "__ARM_FEATURE_SHA3 1")
         set(MARCH_HAS_SHA3 ON)
