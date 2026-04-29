@@ -8,14 +8,14 @@ ExternalProject_Add(llvm
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--depth=1 --sparse --filter=tree:0"
     GIT_PROGRESS TRUE
-    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !*/test !*/docs !*/unittests !*/examples !*/benchmarks !/lldb !/mlir !/clang-tools-extra !/mlir !/flang !openmp !libclc !bolt !cross-project-tests !offload !llvm-libgcc !third-party !flang-rt third-party/siphash lld/docs/CMakeLists.txt clang/examples/CMakeLists.txt polly/test/CMakeLists.txt polly/docs/CMakeLists.txt polly/unittests/CMakeLists.txt libc/benchmarks/CMakeLists.txt"
+    GIT_CLONE_POST_COMMAND "sparse-checkout set --no-cone /* !*/test !*/docs !*/unittests !*/examples !*/benchmarks !/lldb !/mlir !/clang-tools-extra !/mlir !/flang !openmp !libclc !bolt !cross-project-tests !offload !llvm-libgcc !third-party !flang-rt !polly third-party/siphash lld/docs/CMakeLists.txt clang/examples/CMakeLists.txt libc/benchmarks/CMakeLists.txt"
     UPDATE_COMMAND ""
     PATCH_COMMAND ${EXEC} ${GIT_EXECUTABLE} am --3way ${CMAKE_CURRENT_SOURCE_DIR}/llvm/${llvm_patch}
     COMMAND ${EXEC} ${GIT_EXECUTABLE} am --3way ${CMAKE_CURRENT_SOURCE_DIR}/llvm/llvm-0*.patch
     GIT_REMOTE_NAME origin
     GIT_TAG main
     LIST_SEPARATOR ^^
-    CONFIGURE_COMMAND ${EXEC_HOST} echo > <SOURCE_DIR>/polly/docs/CMakeLists.txt & echo > <SOURCE_DIR>/polly/test/CMakeLists.txt & echo > <SOURCE_DIR>/polly/unittests/CMakeLists.txt && ${CMAKE_COMMAND} -H<SOURCE_DIR>/llvm -B<BINARY_DIR>
+    CONFIGURE_COMMAND ${EXEC_HOST} ${CMAKE_COMMAND} -H<SOURCE_DIR>/llvm -B<BINARY_DIR>
         -G Ninja
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_FIND_NO_INSTALL_PREFIX=OFF
@@ -35,8 +35,7 @@ ExternalProject_Add(llvm
         -DCMAKE_SKIP_RPATH=ON
         -DLLVM_INSTALL_TOOLCHAIN_ONLY=ON
         -DLLVM_TARGETS_TO_BUILD='AArch64^^X86^^NVPTX'
-        -DLLVM_ENABLE_PROJECTS='clang^^lld^^polly'
-        -DLLVM_POLLY_LINK_INTO_TOOLS=ON
+        -DLLVM_ENABLE_PROJECTS='clang^^lld'
         -DLLVM_ENABLE_ASSERTIONS=OFF
         -DLLVM_ENABLE_BACKTRACES=ON
         -DLLVM_ENABLE_LIBCXX=ON
@@ -212,7 +211,7 @@ ExternalProject_Add(llvm
         -DLIBXML2_INCLUDE_DIRS=${CMAKE_INSTALL_PREFIX}/include/libxml2
         -DHAVE_LIBXML2=ON
         "-DCMAKE_REQUIRED_FLAGS='-O0 -fno-lto -fno-whole-program-vtables'"
-        "-DCMAKE_REQUIRED_LINK_OPTIONS='-Wl,-O0,--lto-O0,--lto-CGO0,--no-gc-sections,--icf=none,--no-lto-whole-program-visibility,-mllvm,-polly=false,-mllvm,-import-instr-limit=0'"
+        "-DCMAKE_REQUIRED_LINK_OPTIONS='-Wl,-O0,--lto-O0,--lto-CGO0,--no-gc-sections,--icf=none,--no-lto-whole-program-visibility,-mllvm,-import-instr-limit=0'"
         "-DCMAKE_C_FLAGS='-DBLAKE3_NO_SSE2 -DBLAKE3_NO_SSE41 ${tc_cflags} ${tc_libcxx} ${tc_compiler_rt} ${llvm_pgo}'"
         "-DCMAKE_CXX_FLAGS='-DBLAKE3_NO_SSE2 -DBLAKE3_NO_SSE41 ${tc_cflags} ${tc_libcxx} ${tc_compiler_rt} ${llvm_pgo}'"
         "-DCMAKE_ASM_FLAGS='-DBLAKE3_NO_SSE2 -DBLAKE3_NO_SSE41 ${tc_cflags} ${tc_libcxx} ${tc_compiler_rt} ${llvm_pgo}'"
