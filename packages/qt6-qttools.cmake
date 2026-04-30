@@ -36,6 +36,8 @@ ExternalProject_Add(qt6-qttools
         -DQT_FEATURE_clang-rtti=OFF
         -DQT_FEATURE_clang=OFF
         -DQT_FEATURE_clangcpp=OFF
+        -DQT_FEATURE_cxx23=ON
+        -DQT_FEATURE_cxx2b=ON
         -DQT_FEATURE_designer=OFF
         -DQT_FEATURE_distancefieldgenerator=OFF
         -DQT_FEATURE_egl=OFF

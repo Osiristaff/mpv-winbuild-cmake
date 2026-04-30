@@ -231,7 +231,8 @@ set(autoreshit
 set(qt_target_features
     -DQT_FEATURE_brotli=ON
     -DQT_FEATURE_cpp_winrt=OFF
-    -DQT_FEATURE_cxx20=ON
+    -DQT_FEATURE_cxx23=ON
+    -DQT_FEATURE_cxx2b=ON
     -DQT_FEATURE_egl=OFF
     -DQT_FEATURE_fontconfig=OFF
     -DQT_FEATURE_harfbuzz=ON

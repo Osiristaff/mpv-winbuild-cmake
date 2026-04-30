@@ -42,6 +42,8 @@ ExternalProject_Add(qt6-qtbase
         -DQT_FEATURE_accessibility=OFF
         -DQT_FEATURE_androiddeployqt=OFF
         -DQT_FEATURE_backtrace=OFF
+        -DQT_FEATURE_cxx23=ON
+        -DQT_FEATURE_cxx2b=ON
         -DQT_FEATURE_egl=OFF
         -DQT_FEATURE_glib=OFF
         -DQT_FEATURE_glibc_fortify_source=OFF
