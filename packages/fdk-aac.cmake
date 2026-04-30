@@ -10,6 +10,7 @@ ExternalProject_Add(fdk-aac
         ${cmake_conf_args}
         -DFDK_AAC_INSTALL_CMAKE_CONFIG_MODULE=ON
         -DFDK_AAC_INSTALL_PKGCONFIG_MODULE=ON
+        -DCMAKE_CXX_STANDARD=23
     BUILD_ENVIRONMENT_MODIFICATION
         _PACKAGE_NAME=set:${package}
         _BINARY_DIR=set:<BINARY_DIR>
