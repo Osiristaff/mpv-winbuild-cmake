@@ -18,6 +18,7 @@ ExternalProject_Add(rubberband
         -Djni=disabled
         -Dcmdline=disabled
         -Dtests=disabled
+        -Dcpp_std=gnu++23
         "-Dc_args='-DNO_EXCEPTIONS'"
         "-Dcpp_args='-DNO_EXCEPTIONS'"
     BUILD_ENVIRONMENT_MODIFICATION
