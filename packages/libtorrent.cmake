@@ -18,7 +18,7 @@ ExternalProject_Add(libtorrent
         -DBOOST_ROOT=${boost_src}
         -DBoost_INCLUDE_DIR=${boost_src}
         -DBOOST_BUILD_PATH=${boost_src}/tools/build
-        -DCMAKE_CXX_STANDARD=20
+        -DCMAKE_CXX_STANDARD=23
         -Ddeprecated-functions=OFF
         "-DCMAKE_CXX_FLAGS='-w'"
     BUILD_ENVIRONMENT_MODIFICATION
