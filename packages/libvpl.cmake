@@ -17,6 +17,7 @@ ExternalProject_Add(libvpl
         -DBUILD_EXPERIMENTAL=OFF        
         -DINSTALL_DEV=ON
         -DINSTALL_LIB=OFF
+        -DCMAKE_CXX_STANDARD=23
     BUILD_ENVIRONMENT_MODIFICATION
         _PACKAGE_NAME=set:${package}
         _BINARY_DIR=set:<BINARY_DIR>
