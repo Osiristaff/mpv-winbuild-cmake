@@ -29,6 +29,7 @@ if(TARGET_CPU STREQUAL "x86_64")
     set(TARGET_CPU_FAMILY "x86_64")
     set(MARCH "x86-64-v3" CACHE STRING "-march for x86_64")
     set(MTUNE ${MARCH} CACHE STRING "-mtune for x86_64")
+    set(MARCH_EXTRA_FEATURES "" CACHE STRING "extra feature flags like -mapxf -mavx10.2")
     if(MARCH MATCHES "x86-64")
         if(MTUNE STREQUAL ${MARCH})
             set(MTUNE "generic")
@@ -41,6 +42,15 @@ elseif(TARGET_CPU STREQUAL "aarch64")
     set(TARGET_CPU_FAMILY "aarch64")
     set(MARCH "cortex-x1" CACHE STRING "-mcpu for aarch64")
     set(MTUNE ${MARCH} CACHE STRING "-mtune for aarch64")
+    set(MARCH_EXTRA_FEATURES "" CACHE STRING "extra feature list like +cssc+sme")
+    if(MARCH MATCHES "armv[0-9]+\\.[0-9]+-a")
+        if(MTUNE STREQUAL ${MARCH})
+            set(MTUNE "generic")
+        endif()
+        set(MARCH_IS_CPU FALSE)
+    else()
+        set(MARCH_IS_CPU TRUE)
+    endif()
     set(MARCH_NAME_DEFAULT "")
 endif()
 set(MARCH_NAME ${MARCH_NAME_DEFAULT} CACHE STRING "-march name suffix")
@@ -124,7 +134,7 @@ set(MAKE ${EXEC} make -j${MAKEJOBS})
 
 if(TARGET_CPU STREQUAL "x86_64")
     execute_process(
-        COMMAND ${EXEC} echo | ${CMAKE_C_COMPILER} --target=x86_64 -dM -E - -march=${MARCH}
+        COMMAND ${EXEC} echo | ${CMAKE_C_COMPILER} --target=x86_64 -dM -E - -march=${MARCH} ${MARCH_EXTRA_FEATURES}
         OUTPUT_VARIABLE CC_OUTPUT
     )
     if(CC_OUTPUT MATCHES "__AVX__ 1")
@@ -137,10 +147,17 @@ if(TARGET_CPU STREQUAL "x86_64")
         set(MARCH_HAS_APX ON)
     endif()
 else()
-    execute_process(
-        COMMAND ${EXEC} echo | ${CMAKE_C_COMPILER} --target=aarch64 -dM -E - -mcpu=${MARCH}+crypto
-        OUTPUT_VARIABLE CC_OUTPUT
-    )
+    if(MARCH_IS_CPU)
+        execute_process(
+            COMMAND ${EXEC} echo | ${CMAKE_C_COMPILER} --target=aarch64 -dM -E - -mcpu=${MARCH}+crypto${MARCH_EXTRA_FEATURES}
+            OUTPUT_VARIABLE CC_OUTPUT
+        )
+    else()
+        execute_process(
+            COMMAND ${EXEC} echo | ${CMAKE_C_COMPILER} --target=aarch64 -dM -E - -march=${MARCH}+crypto${MARCH_EXTRA_FEATURES}
+            OUTPUT_VARIABLE CC_OUTPUT
+        )
+    endif()
     if(CC_OUTPUT MATCHES "__ARM_FEATURE_FP16_VECTOR_ARITHMETIC 1")
         set(MARCH_HAS_FP16 ON)
     endif()
@@ -170,6 +187,9 @@ else()
     endif()
     if(CC_OUTPUT MATCHES "__ARM_FEATURE_SVE2 1")
         set(MARCH_HAS_SVE2 ON)
+    endif()
+    if(CC_OUTPUT MATCHES "__ARM_FEATURE_CSSC 1")
+        set(MARCH_HAS_CSSC ON)
     endif()
 endif()
 
