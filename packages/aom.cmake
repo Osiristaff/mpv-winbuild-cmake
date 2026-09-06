@@ -24,7 +24,7 @@ ExternalProject_Add(aom
         -DCONFIG_UNIT_TESTS=0
         -DCONFIG_AV1_DECODER=0
         -DENABLE_APPS=0
-        -DAOM_TARGET_CPU=generic
+        #-DAOM_TARGET_CPU=generic
         #-DCONFIG_TUNE_VMAF=1
     ${aom_vpx_sse2avx}
     ${novzeroupper} <SOURCE_DIR>/third_party/x86inc/x86inc.asm
