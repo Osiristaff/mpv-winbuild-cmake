@@ -19,6 +19,7 @@ list(APPEND ep
     libvpx
     game-music-emu
     libpng
+    x264
     x265
     libdvdcss
     libdvdread

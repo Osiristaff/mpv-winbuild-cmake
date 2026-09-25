@@ -465,8 +465,8 @@ set(qthost_force_skip_check
 
 set(trim_path
     COMMAND ${EXEC} sed -i
-    -e 's|${MINGW_INSTALL_PREFIX}|${TARGET_ARCH}|g'
-    -e 's|${SINGLE_SOURCE_LOCATION}|soucre|g'
+    -e 's|${MINGW_INSTALL_PREFIX}|holywu|g'
+    -e 's|${SINGLE_SOURCE_LOCATION}|src|g'
     -e 's|${PROJECT_BINARY_DIR}|build|g'
 )
 
