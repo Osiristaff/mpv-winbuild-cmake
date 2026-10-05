@@ -1,6 +1,5 @@
 ExternalProject_Add(llvm
     DEPENDS
-        mimalloc-host
         libxml2-host
         zlib-host
         zstd-host
@@ -34,7 +33,7 @@ ExternalProject_Add(llvm
         -DCMAKE_INSTALL_RPATH=OFF
         -DCMAKE_SKIP_RPATH=ON
         -DLLVM_INSTALL_TOOLCHAIN_ONLY=ON
-        -DLLVM_TARGETS_TO_BUILD='AArch64^^X86^^NVPTX'
+        -DLLVM_TARGETS_TO_BUILD='X86^^NVPTX'
         -DLLVM_ENABLE_PROJECTS='clang^^lld'
         -DLLVM_ENABLE_ASSERTIONS=OFF
         -DLLVM_ENABLE_BACKTRACES=ON
@@ -173,7 +172,6 @@ ExternalProject_Add(llvm
         -DLLVM_TOOL_LLVM_SPECIAL_CASE_LIST_FUZZER_BUILD=OFF
         -DLLVM_TOOL_LLVM_SPLIT_BUILD=OFF
         -DLLVM_TOOL_LLVM_STRESS_BUILD=OFF
-        -DLLVM_TOOL_LLVM_STRINGS_BUILD=OFF
         -DLLVM_TOOL_LLVM_TLI_CHECKER_BUILD=OFF
         -DLLVM_TOOL_LLVM_UNDNAME_BUILD=OFF
         -DLLVM_TOOL_LLVM_XRAY_BUILD=OFF
@@ -218,7 +216,7 @@ ExternalProject_Add(llvm
         "-DCMAKE_C_FLAGS='-DBLAKE3_NO_SSE2 -DBLAKE3_NO_SSE41 ${tc_cflags} ${tc_libcxx} ${tc_compiler_rt} ${llvm_pgo}'"
         "-DCMAKE_CXX_FLAGS='-DBLAKE3_NO_SSE2 -DBLAKE3_NO_SSE41 ${tc_cflags} ${tc_libcxx} ${tc_compiler_rt} ${llvm_pgo}'"
         "-DCMAKE_ASM_FLAGS='-DBLAKE3_NO_SSE2 -DBLAKE3_NO_SSE41 ${tc_cflags} ${tc_libcxx} ${tc_compiler_rt} ${llvm_pgo}'"
-        "-DCMAKE_EXE_LINKER_FLAGS='${CMAKE_INSTALL_PREFIX}/lib/mimalloc.o ${tc_ldflags}'"
+        "-DCMAKE_EXE_LINKER_FLAGS='${MALLOC} ${tc_ldflags}'"
         -DLLVM_TOOLCHAIN_TOOLS='llvm-driver^^llvm-ar^^llvm-ranlib^^llvm-objdump^^llvm-rc^^llvm-nm^^llvm-readobj^^llvm-dlltool^^llvm-objcopy^^llvm-strip^^llvm-profdata^^llvm-addr2line^^llvm-symbolizer^^llvm-windres^^llvm-ml^^llvm-mt^^llvm-readelf^^llvm-size'
     BUILD_COMMAND ${EXEC_HOST} ninja -C <BINARY_DIR> llvm-driver
     INSTALL_COMMAND ${EXEC_HOST} ninja -C <BINARY_DIR> install-llvm-driver install-clang-resource-headers
