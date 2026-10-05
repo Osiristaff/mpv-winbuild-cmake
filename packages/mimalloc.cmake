@@ -1,14 +1,17 @@
 ExternalProject_Add(mimalloc
     SOURCE_DIR ${SOURCE_LOCATION}
-    GIT_REPOSITORY https://github.com/Andarwinux/mimalloc.git
+    GIT_REPOSITORY https://github.com/microsoft/mimalloc.git
     GIT_CLONE_FLAGS "--depth=1 --filter=tree:0"
     GIT_PROGRESS TRUE
     UPDATE_COMMAND ""
     GIT_REMOTE_NAME origin
-    GIT_TAG dev2
+    GIT_TAG main3
     CONFIGURE_ENVIRONMENT_MODIFICATION
         _IS_CONFIGURE=set:1
-    CONFIGURE_COMMAND ${EXEC} ${CMAKE_COMMAND} -H<SOURCE_DIR> -B<BINARY_DIR>
+    CONFIGURE_COMMAND ${EXEC} sed -i [['s/haswell/znver4/g']] <SOURCE_DIR>/CMakeLists.txt
+    COMMAND ${EXEC} sed -i [['/fno-builtin/d']] <SOURCE_DIR>/CMakeLists.txt
+    COMMAND ${EXEC} sed -i [['/WIN32_WINNT/d']] <SOURCE_DIR>/CMakeLists.txt
+    COMMAND ${EXEC} ${CMAKE_COMMAND} -S<SOURCE_DIR> -B<BINARY_DIR>
         ${cmake_conf_args}
         -DMI_BUILD_SHARED=ON
         -DMI_BUILD_STATIC=OFF
@@ -16,16 +19,10 @@ ExternalProject_Add(mimalloc
         -DMI_BUILD_TESTS=OFF
         -DMI_INSTALL_TOPLEVEL=ON
         -DMI_OVERRIDE=ON
-        -DMI_SKIP_COLLECT_ON_EXIT=ON
-        -DMI_USE_CXX=ON
         -DBUILD_SHARED_LIBS=ON
         -DCMAKE_UNITY_BUILD=ON
         -DCMAKE_UNITY_BUILD_BATCH_SIZE=0
-        -DMI_OPT_ARCH=OFF
-        -DMI_NO_OPT_ARCH=ON
-        -DCMAKE_SHARED_LIBRARY_PREFIX_CXX=''
-        "-DCMAKE_C_FLAGS='-DMI_DEBUG=0 ${mimalloc_macro}'"
-        "-DCMAKE_CXX_FLAGS='-DMI_DEBUG=0 ${mimalloc_macro}'"
+        -DMI_EXTRA_CPPDEFS="MI_DEBUG=0;MI_DEFAULT_ALLOW_LARGE_OS_PAGES=1;MI_OPT_SIMD=1"
     BUILD_ENVIRONMENT_MODIFICATION
         _PACKAGE_NAME=set:${package}
         _BINARY_DIR=set:<BINARY_DIR>
