@@ -18,6 +18,7 @@ list(APPEND ep
     libmodplug
     game-music-emu
     libpng
+    x264
     x265
     libdvdcss
     libdvdread
