@@ -8,12 +8,6 @@ if(NOT DEFINED CMAKE_SCRIPT_MODE_FILE)
         -Dcuda-interop=enabled
         -Dd3d-hwaccel=enabled
         -Dd3d11=enabled
-        -Dd3d9-hwaccel=enabled
-        -Ddirect3d=enabled
-        -Ddvda=enabled
-        -Ddvdnav=enabled
-        -Degl-angle=enabled
-        -Dgl-dxinterop-d3d9=enabled
         -Dgl-dxinterop=enabled
         -Dgl-win32=enabled
         -Dgl=enabled
@@ -47,15 +41,12 @@ if(NOT DEFINED CMAKE_SCRIPT_MODE_FILE)
     )
     ExternalProject_Add(mpv
         DEPENDS
-            angle-headers
             nvcodec-headers
             ffmpeg
             fribidi
             lcms2
             libarchive
             libass
-            libdvdnav
-            libdvdread
             libiconv
             libjpeg
             libpng
@@ -91,7 +82,6 @@ if(NOT DEFINED CMAKE_SCRIPT_MODE_FILE)
             _IS_UNWIND_ALLOWED=set:1
             _IS_EXCEPTIONS_ALLOWED=set:1
             _FORCE_HIDE_DLLEXPORT=set:1
-            _PDB_GENERATE=set:1
         BUILD_COMMAND ${EXEC} meson install -C <BINARY_DIR>/build --only-changed --tags devel
         INSTALL_COMMAND ""
         LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
@@ -124,7 +114,6 @@ if(NOT DEFINED CMAKE_SCRIPT_MODE_FILE)
     ExternalProject_Add_Step(mpv copy-binary
         DEPENDEES ${copy-binary-dep}
         COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/build/mpv.exe <BINARY_DIR>/mpv-package/mpv.exe
-        COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/build/mpv.pdb <BINARY_DIR>/mpv-package/mpv.pdb
         COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/etc/mpv-register.bat <BINARY_DIR>/mpv-package/mpv-register.bat
         COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/etc/mpv-unregister.bat <BINARY_DIR>/mpv-package/mpv-unregister.bat
         COMMENT "Copying mpv binaries"
