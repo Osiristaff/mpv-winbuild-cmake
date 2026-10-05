@@ -2,12 +2,13 @@ get_property(src_graphengine TARGET graphengine PROPERTY _EP_SOURCE_DIR)
 ExternalProject_Add(libzimg
     DEPENDS
         graphengine
-    GIT_REPOSITORY https://github.com/Andarwinux/zimg.git
+    GIT_REPOSITORY https://github.com/sekrit-twc/zimg.git
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--depth=1 --no-single-branch --filter=tree:0"
     GIT_PROGRESS TRUE
     GIT_SUBMODULES ""
     GIT_CONFIG "submodule.recurse=false"
+    PATCH_COMMAND ${EXEC} ${GIT_EXECUTABLE} am --3way ${CMAKE_CURRENT_SOURCE_DIR}/libzimg-*.patch
     UPDATE_COMMAND ""
     GIT_REMOTE_NAME origin
     GIT_TAG master
