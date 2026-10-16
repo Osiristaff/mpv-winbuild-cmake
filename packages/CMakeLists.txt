@@ -25,7 +25,7 @@ list(APPEND ep
     libdvdnav
     libiconv
     meson-wrap
-    lua5.2
+    luajit
     fribidi
     libxml2
     brotli

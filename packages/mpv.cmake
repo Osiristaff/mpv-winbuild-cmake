@@ -19,7 +19,7 @@ if(NOT DEFINED CMAKE_SCRIPT_MODE_FILE)
         -Dlibavdevice=enabled
         -Dlibbluray=enabled
         -Dlibcurl=enabled
-        -Dlua=lua5.2
+        -Dlua=luajit
         -Dopenal=enabled
         -Drubberband=enabled
         -Dsdl2-gamepad=enabled
@@ -50,7 +50,7 @@ if(NOT DEFINED CMAKE_SCRIPT_MODE_FILE)
             libiconv
             libjpeg
             libpng
-            lua5.2
+            luajit
             rubberband
             uchardet
             openal-soft
