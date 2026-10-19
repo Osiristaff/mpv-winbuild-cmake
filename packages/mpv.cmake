@@ -63,7 +63,7 @@ if(NOT DEFINED CMAKE_SCRIPT_MODE_FILE)
             libsdl2
             libsixel
             curl
-        GIT_REPOSITORY https://github.com/mpv-player/mpv.git
+        GIT_REPOSITORY https://github.com/Osiristaff/mpv.git
         SOURCE_DIR ${SOURCE_LOCATION}
         GIT_CLONE_FLAGS "--depth=1 --filter=tree:0"
         GIT_PROGRESS TRUE
